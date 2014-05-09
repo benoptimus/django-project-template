@@ -1,0 +1,5 @@
+# includes the _base.txt requirements file
+-r base.txt
+coverage
+django-discover-runner
+django-jenkins
