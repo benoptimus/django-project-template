@@ -1,2 +1,14 @@
 Django==1.6
+django-appconf
+django-model-utils
+django-compressor
+django-extensions
+django-floppyforms
+django-uuidfield
 South
+
+bpython
+mimeparse
+mock
+selenium
+pytz

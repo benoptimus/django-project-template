@@ -186,8 +186,17 @@ DJANGO_APPS = (
 	)
 
 THIRD_PARTY_APPS = (
-	# Database migration helpers:
+	# Database migration helpers
 	'south',
+	#version control,never lose your again and more
+	'reversion',
+	#Compressor combines and compresses linked and inline Javascript or CSS
+	'compressor',
+	#collection of custom extensions
+	'django_extensions',
+	#Full control of form rendering in the templates
+	'floppyforms'
+
 	)
 
 # Apps specific for this project go here.
