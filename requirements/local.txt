@@ -1,0 +1,7 @@
+# Local development dependencies go here
+-r _base.txt
+django-debug-toolbar
+django-discover-runner
+coverage
+Fabric
+Werkzeug
