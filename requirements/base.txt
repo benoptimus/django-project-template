@@ -5,6 +5,7 @@ django-compressor
 django-extensions
 django-floppyforms
 django-uuidfield
+django-reversion
 South
 
 bpython
