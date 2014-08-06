@@ -1,0 +1,35 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<title>{{project_name}}</title>
+		<meta name="viewport"
+			  content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		{% block blockbots %}
+			<meta name="robots" content="NONE,NOARCHIVE" />
+		{% endblock %}
+		{% block extrahead %}
+		{% endblock %}
+
+		<!--stylesheets -->
+		<link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet" type="text/css">
+		<link href="{{ STATIC_URL }}css/bootstrap-theme.min.css" rel="stylesheet" type="text/css">
+		{% block css %}
+		{% endblock %}
+	</head>
+
+	</body>
+	<!--javascripts -->
+	<script src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+
+	</body>
+
+	{% block content %}
+	{% endblock %}
+	{% block extra_js %}
+	{% endblock extra_js %}
+</html>
