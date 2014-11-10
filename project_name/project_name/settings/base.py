@@ -186,8 +186,6 @@ DJANGO_APPS = (
 	)
 
 THIRD_PARTY_APPS = (
-	# Database migration helpers
-	'south',
 	#version control,never lose your again and more
 	'reversion',
 	#Compressor combines and compresses linked and inline Javascript or CSS
