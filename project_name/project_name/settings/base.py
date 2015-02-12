@@ -11,6 +11,9 @@ DJANGO_ROOT = dirname(dirname(abspath(__file__)))
 # Absolute filesystem path to the top-level project folder:
 SITE_ROOT = dirname(DJANGO_ROOT)
 
+#setting base_dir for django_extensions
+BASE_DIR = SITE_ROOT
+
 # Site name:
 SITE_NAME = basename(DJANGO_ROOT)
 
