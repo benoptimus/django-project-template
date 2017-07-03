@@ -1,6 +1,5 @@
 # Local development dependencies go here
 -r base.txt
-django-debug-toolbar
 django-discover-runner
 coverage
 Fabric

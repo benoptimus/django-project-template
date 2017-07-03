@@ -1,12 +1,7 @@
-Django==1.7.2
+Django==1.10
 django-appconf
 django-model-utils
-django-compressor
 django-extensions
-django-floppyforms
-django-uuidfield
-django-reversion
-django-countries
 
 bpython
 mimeparse
