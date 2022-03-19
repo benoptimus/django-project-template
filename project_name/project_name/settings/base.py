@@ -3,6 +3,7 @@
 from logging.handlers import SysLogHandler
 from os.path import abspath, basename, dirname, join, normpath
 from sys import path
+from datetime import timedelta
 
 ########## PATH CONFIGURATION
 # Absolute filesystem path to the Django project directory:
@@ -110,7 +111,7 @@ STATICFILES_FINDERS = (
 ########## SECRET CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 # Note: This key only used for development and testing.
-SECRET_KEY = '{{ secret_key }}'
+SECRET_KEY = 'django-insecure-l%_e__(qtw2ov0m#$#382zpxgj4jbkkt&ai)k8!#)5ne#21ym&'
 ########## END SECRET CONFIGURATION
 
 
@@ -157,8 +158,8 @@ LOCALE_PATHS   = (
 
 ########## MIDDLEWARE CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#middleware-classes
-MIDDLEWARE_CLASSES = (
-	# Default Django middleware.
+MIDDLEWARE = (
+	'corsheaders.middleware.CorsMiddleware',
 	'django.middleware.common.CommonMiddleware',
 	'django.contrib.sessions.middleware.SessionMiddleware',
 	'django.middleware.locale.LocaleMiddleware',
@@ -193,10 +194,20 @@ DJANGO_APPS = (
 	)
 
 THIRD_PARTY_APPS = (
+    'corsheaders',
+    'django_extensions',
+    'rest_framework',
+    'rest_framework_simplejwt',
+    #'drf_yasg',
+    'drf_spectacular',
+    'drf_spectacular_sidecar',
 	)
 
 # Apps specific for this project go here.
-LOCAL_APPS = ()
+LOCAL_APPS = (
+	"cuser",
+ 	"api",
+)
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -266,11 +277,13 @@ WSGI_APPLICATION = 'wsgi.application'
 ########## END WSGI CONFIGURATION
 
 # See: https://docs.djangoproject.com/en/dev/topics/auth/customizing/#substituting-a-custom-user-model
-#AUTH_USER_MODEL = 'MODEL_USER'
+AUTH_USER_MODEL = 'cuser.User'
 ########## END AUTH_USER_MODEL CONFIGURATION
 
 #AUTH_PROFILE_MODULE = ''
 
+#AUTHENTICATION_BACKENDS
+AUTHENTICATION_BACKENDS = ['{{ project_name }}.auth.backends.EmailBackend']
 
 #SOUTH
 SKIP_SOUTH_TESTS = True
@@ -288,3 +301,61 @@ DATE_INPUT_FORMATS = (
 	'%B %d %Y', '%B %d, %Y',
 	'%d %B %Y', '%d %B, %Y',
 )
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_RENDERER_CLASSES':(
+        'utilities.renderers.CustomRenderer',
+    ),
+    'EXCEPTION_HANDLER': 'utilities.renderers.custom_exception_handler',
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = False
+
+CORS_ALLOWED_ORIGINS = [
+]
+
+APPEND_SLASH = False
+
+SWAGGER_SETTINGS = {
+   'SECURITY_DEFINITIONS': {
+      'Basic': {
+            'type': 'basic'
+      },
+      'Token': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+      }
+   }
+}
+
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': '{{ project_name }} API',
+    'DESCRIPTION': 'APP',
+    'VERSION': 'V1',
+    #'SWAGGER_UI_DIST': 'SIDECAR',  # shorthand to use the sidecar instead
+    #'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
+    #'REDOC_DIST': 'SIDECAR',
+
+    #'SERVE_URLCONF':'http://localhost:8000/swagger?format=openapi',
+    'SERVERS': [{'url':'http://localhost:8000', 'description':'dev'}],
+    'SERVE_INCLUDE_SCHEMA': False,
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=2),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': False,
+    'UPDATE_LAST_LOGIN': False,
+
+    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+}
