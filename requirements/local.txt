@@ -1,6 +1,6 @@
-# Local development dependencies go here
--r base.txt
-django-discover-runner
+django-debug-toolbar
+sphinx
 coverage
-Fabric
-Werkzeug
+flake8
+pytest
+tox
