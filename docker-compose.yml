@@ -1,0 +1,86 @@
+version: '3'
+
+services:
+    swagger:
+        image: swaggerapi/swagger-ui
+        container_name: {{ project_name }}-swagger-ui
+        environment:
+            SWAGGER_JSON: /schema.yml
+        volumes:
+            - ./schema.yml:/schema.yml
+        expose:
+            - 8080
+        stdin_open: true
+        tty: true
+    certbot:
+        container_name: {{ project_name }}-certbot
+        build: ./dockerfiles/certbot
+        volumes:
+            - ./configs/certbot/conf:/etc/letsencrypt
+            - ./configs/certbot/www:/var/www/certbot
+        env_file:
+            - ./dockerfiles/certbot/.envs
+        stdin_open: true
+        tty: true
+    nginx:
+        image: nginx:1.20
+        container_name: {{ project_name }}-nginx
+        ports:
+        - "80:80"
+        - "443:443"
+        volumes:
+            - ./src:/src
+            - ./configs/nginx/sites-enabled:/etc/nginx/conf.d
+            - ./configs/certbot/conf:/etc/letsencrypt
+            - ./configs/certbot/www:/var/www/certbot
+            - ./configs/nginx/extras:/etc/nginx/extras
+            - ./{{ project_name }}/assets:/code/{{ project_name }}/assets
+        depends_on:
+            - backend
+    redis:
+        image: redis
+        container_name: {{ project_name }}-redis
+    db:
+        container_name: {{ project_name }}-db
+        image: mysql:8.0.21
+        stop_signal: SIGINT  # Fast shutdown.
+        ports:
+            - "3306:3306"
+        env_file:
+            - .envs/mysql.env
+        volumes:
+            - {{ project_name }}_dbdata:/var/lib/mysql
+        #healthcheck:
+        #  test: ["CMD-SHELL", "mysqladmin ping -h localhost -P 3306 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD"]
+        #  timeout: 30s
+        #  interval: 5s
+    backend:
+        container_name: {{ project_name }}-backend
+        build: .
+        command: >
+            sh -c "./wait-for-it.sh {{ project_name }}-db:3306;
+                    crond -b -l 0 -L ./logcrond
+                    ./{{ project_name }}/manage.py migrate;
+                    while :;
+                    do exec ./{{ project_name }}/manage.py runserver 0.0.0.0:8000;
+                    done;
+                    "
+        stop_signal: SIGINT  # The devserver only stops on SIGINT.
+        stdin_open: true
+        tty: true
+        volumes:
+            - .:/code:cached
+        ports:
+            - "8000:8000"
+        env_file:
+            - .envs/app.env
+        #depends_on:
+        #  db:
+        #    condition: service_healthy
+        #  redis:
+        #    condition: service_started
+        environment:
+            IN_DOCKER: 1
+
+volumes:
+    {{ project_name }}_dbdata:
